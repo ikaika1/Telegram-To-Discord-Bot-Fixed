@@ -4,6 +4,11 @@ import yaml
 import discord
 import asyncio
 
+
+
+
+
+
 message = []
 
 with open('config.yml', 'rb') as f:
@@ -53,11 +58,22 @@ async def background_task():
     global message
     await discord_client.wait_until_ready()
     discord_channel = discord_client.get_channel(config["discord_channel"])
+    
     while True:
-        if message != []:
+        if message != [] and message != [''] and "CryptoKudasaiJP" not in message and message[0] != "":
+            
+           
+           if any(map(lambda x: x == "", message)):
+            message = []  
+
+           else:
+            #print(message)
             await discord_channel.send(message[0])
             message.pop(0)
-        await asyncio.sleep(0.1)
+        else:
+            message = []       
+        
+        await asyncio.sleep(0.01)
 
 discord_client.loop.create_task(background_task())
 
